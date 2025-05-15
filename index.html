@@ -1,0 +1,1563 @@
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>اختبار تبع اتصالات (:</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <style>
+        body {
+            height: 100vh;
+            margin: 0;
+            background-image: url(https://wallpaperaccess.com/full/2384075.jpg);
+            background-size: cover;
+            background-position: center;
+            /* direction: rtl; */
+            /* font-family: "Trirong", serif; */
+            color: #222;
+        }
+
+        .n {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            max-width: 800px;
+            width: 100%;
+            margin: 50px auto;
+        }
+
+        h5 {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .progress {
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #e0e0e0;
+        }
+
+        .progress-bar {
+            background-color: #007bff;
+        }
+
+        .question-container {
+            display: none;
+        }
+
+        .question-container.active {
+            display: block;
+        }
+
+        .option-box {
+            border: 2px solid #ddd;
+            padding: 12px;
+            margin-bottom: 10px;
+            width: 100%;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+            /* text-align: right; */
+            border-radius: 8px;
+            transition: background 0.3s ease;
+            background-color: #f9f9f9;
+        }
+
+        .option-box:hover {
+            background-color: #f1f1f1;
+        }
+
+        .correct {
+            background-color: #28a745 !important;
+            color: white;
+        }
+
+        .incorrect {
+            background-color: #dc3545 !important;
+            color: white;
+        }
+
+        #score-container {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #444;
+        }
+
+        #end-of-page {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        #end-of-page a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        #end-of-page a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .n {
+                padding: 20px;
+                margin: 20px auto;
+            }
+
+            h5 {
+                font-size: 1.3rem;
+            }
+
+            .option-box {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Trirong">
+</head>
+
+<body>
+    <div class="container n mt-5">
+        <h5 class="text-center">اختبار البصمجة | مادة اتصالات :) </h5>
+        <div class="progress mt-4">
+            <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0"
+                aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div id="score-container" class="text-center mt-4"></div>
+        <hr />
+        <hr />
+        <div id="quiz-container" class="mt-4">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+        <hr />
+        <div id="end-of-page" class="mt-4">
+            <p>خلاااااص هااانت ياا صديقي ياقي 4 ايام </p>
+            <p>
+              By:  Mohamed Abdel Fatah Halabi
+            </p>
+            <p><a href="https://github.com/Moemen1115">Github</a></p>
+            <p>
+                <a href="https://www.linkedin.com/in/mohamed-abdel-fatah-0369b6221">linkedin</a>
+            </p>
+        </div>
+    </div>
+
+    <audio id="correct-sound" src="correct.mp3"></audio>
+    <audio id="incorrect-sound" src="./g.mp3"></audio>
+
+    <script>
+        const questions = [
+            {
+                question: "What is the primary purpose of waterproofing materials in buildings?",
+                options: [
+                    "To decorate the building",
+                    "To prevent water and moisture from entering building elements",
+                    "To provide insulation against heat",
+                    "To enhance the aesthetic appeal"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following is a common material used in waterproofing?",
+                options: [
+                    "Asphalt",
+                    "Wood",
+                    "Brick",
+                    "Glass"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "What is the main characteristic of bitumen that makes it ideal for waterproofing?",
+                options: [
+                    "Its flexibility and resistance to fungi and insects",
+                    "Its high strength in heat",
+                    "Its ability to reflect sunlight",
+                    "Its transparency"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Which of these is NOT a cause of dampness in buildings?",
+                options: [
+                    "Rainwater infiltration",
+                    "Underground water movement",
+                    "Condensation",
+                    "Low temperatures"
+                ],
+                answer: 3 // D
+            },
+            {
+                question: "What type of cement is used to fill separations in marble tiles?",
+                options: [
+                    "Portland cement",
+                    "White cement",
+                    "Epoxy cement",
+                    "Asphalt cement"
+                ],
+                answer: 1 // C
+            },
+            {
+                question: "How does capillary action contribute to dampness in buildings?",
+                options: [
+                    "Water is absorbed by large pores only",
+                    "Water is drawn into porous materials like concrete or brick",
+                    "Water evaporates through the walls",
+                    "Water moves to higher floors"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the typical thickness of bitumen rolls used for waterproofing?",
+                options: [
+                    "1-2 mm",
+                    "3-5 mm",
+                    "10-12 mm",
+                    "15-20 mm"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which material is commonly used for waterproofing swimming pool floors?",
+                options: [
+                    "Acrylic",
+                    "Cement",
+                    "Bitumen",
+                    "Epoxy"
+                ],
+                answer: 0 // D
+            },
+            {
+                question: "What is the primary reason for using bitumen in waterproofing?",
+                options: [
+                    "It is cheap and flexible",
+                    "It is highly durable",
+                    "It reflects sunlight",
+                    "It enhances the aesthetic of buildings"
+                ],
+                answer: 0 // B
+            },
+            {
+                question: "What is the effect of poor sewage drainage on a building?",
+                options: [
+                    "It increases the strength of the building",
+                    "It can cause dampness in nearby elements of the building",
+                    "It reduces the construction cost",
+                    "It prevents water from entering the building"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which material is prohibited due to its harmful effects on health and the environment?",
+                options: [
+                    "Fiberglass",
+                    "Asbestos",
+                    "Shingle",
+                    "Acrylic"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the primary role of thermal insulating material in waterproofing roofs?",
+                options: [
+                    "To reduce noise pollution",
+                    "To resist water permeability",
+                    "To prevent heat transfer"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Why is fiberglass used in waterproofing?",
+                options: [
+                    "It provides flexibility to concrete surfaces",
+                    "It has high resistance to water and is used in tank construction",
+                    "It increases the aesthetic value of walls",
+                    "It is a cost-effective alternative to shingle"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the function of waterproofing liquid made from paraffin wax and volatile oil?",
+                options: [
+                    "To be mixed with cement for increased resistance",
+                    "To be sprayed or painted on required surfaces",
+                    "To provide structural reinforcement",
+                    "To act as an adhesive for tiles"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which waterproofing material is described as a polymeric substance with rapid solidification?",
+                options: [
+                    "Epoxy",
+                    "Acrylic",
+                    "Fiberglass",
+                    "Tarpaulin"
+                ],
+                answer: 0 // A
+            },
+            {
+                // 16
+                question: "What is the purpose of bitumen paints in waterproofing?",
+                options: [
+                    "To improve aesthetic appeal",
+                    "To provide adhesion between concrete and the insulation layer",
+                    "To enhance thermal insulation",
+                    "To increase surface hardness"
+                ],
+                answer: 1 // B
+            }
+            // removed 17
+            ,
+            {
+                question: "What is the primary function of a shingle?",
+                options: [
+                    "To provide thermal insulation",
+                    "To resist water permeability",
+                    "To cover inclined surfaces and remove accumulated water",
+                    "To act as a fire-resistant layer"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which of the following is not mentioned as a method of waterproofing foundations?",
+                options: [
+                    "Using bitumen paints",
+                    "Applying epoxy layers",
+                    "Using a tarpaulin layer"
+                ],
+                answer: 1 // C
+            },
+            {
+                question: "Which of the following materials is not listed as a sheet or layer used for waterproofing?",
+                options: [
+                    "Polyethylene membrane",
+                    "Rubber sheets",
+                    "Nylon",
+                    "Marble"
+                ],
+                answer: 3 // D
+            },
+            {
+                question: "What is the unit of permeability?",
+                options: [
+                    "Pascal (Pa)",
+                    "Newton (N)",
+                    "Darcy (D)",
+                    "Joule (J)"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which factor affects the velocity of liquid flow in a porous medium?",
+                options: [
+                    "Permeability coefficient (k)",
+                    "Thickness of the medium (Δx)",
+                    "Applied pressure difference (ΔP)",
+                    "All of the above"
+                ],
+                answer: 3 // D
+            },
+            {
+                question: "What is the permeability coefficient of fresh granite?",
+                options: [
+                    "0.1 mD",
+                    "0.01 mD",
+                    "0.001 mD",
+                    "0.0001 mD"
+                ],
+                answer: 3 // D
+            },
+            {
+                question: "Which of the following materials has the highest permeability?",
+                options: [
+                    "Well-sorted gravel",
+                    "Concrete",
+                    "Fresh granite",
+                    "Unweathered clay"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "If the thickness of a porous material increases, the velocity of fluid flow will:",
+                options: [
+                    "Increase",
+                    "Decrease",
+                    "Remain the same",
+                    "First increase, then decrease"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following is a primary benefit of thermal insulation in a building?",
+                options: [
+                    "Increased noise levels",
+                    "Reduced energy consumption for heating and cooling",
+                    "Higher humidity levels",
+                    "Accelerated material degradation"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Thermal insulation contributes to:",
+                options: [
+                    "Stabilizing internal building temperatures.",
+                    "Reducing greenhouse gas emissions.",
+                    "Extending the lifespan of building materials.",
+                    "All of the above."
+                ],
+                answer: 3 // D
+            },
+            {
+                question: "Which of the following is NOT an advantage of thermal insulation?",
+                options: [
+                    "Reduce energy bills.",
+                    "Increase the volatility of the internal building temperature.",
+                    "Reduce greenhouse gas emissions.",
+                    "Extend the lifespan of building elements"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following is classified as an organic thermal insulator?",
+                options: [
+                    "Glass",
+                    "Asbestos.",
+                    "Cotton.",
+                    "Calcium silicate."
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Polyurethane foam is a thermal insulator that is applied in what form?",
+                options: [
+                    "Rolls",
+                    "Sheets.",
+                    "Liquid or gaseous fluids.",
+                    "Grains."
+                ],
+                answer: 2 // C
+            }
+
+
+            //   ///////////////////////  30  to 60
+            ,
+            {
+                question: "Granulated cork is an example of a thermal insulator in the form of:",
+                options: [
+                    "Rolls",
+                    "Sheets",
+                    "Liquid",
+                    "Grains"
+                ],
+                answer: 3 // D
+            },
+            {
+                question: "Which of the following insulating materials is known for its susceptibility to water and dust absorption?",
+                options: [
+                    "Glass wool",
+                    "Cork",
+                    "Cellulose",
+                    "Polyurethane"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is the primary function of the aluminum layers in Astrofoil (XPE) insulation?",
+                options: [
+                    "To increase the material's flexibility",
+                    "To reflect solar radiation",
+                    "To enhance acoustic insulation",
+                    "To prevent fire spread"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Expanded Polystyrene (EPS) is derived from which source?",
+                options: [
+                    "Wood",
+                    "Cork tree",
+                    "Petroleum products",
+                    "Recycled paper"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which insulation material is commonly used in both building insulation and for insulating boilers and reservoirs?",
+                options: [
+                    "Rock wool",
+                    "Polycarbonate panels",
+                    "Glass wool",
+                    "Fire retardant sheets"
+                ],
+                answer: 2 // A
+            },
+            {
+                question: "Which color has the highest absorptivity?",
+                options: [
+                    "Green",
+                    "Red",
+                    "Brown",
+                    "Black"
+                ],
+                answer: 3 // D
+            },
+            {
+                question: "What is the ratio of reflected radiation from a surface to the total incident radiation?",
+                options: [
+                    "Reflectivity",
+                    "Absorptivity",
+                    "Rate of heat transfer through a material",
+                    "Moisture absorption"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Which of the following factors affects the reflectivity of an insulating material?",
+                options: [
+                    "Density",
+                    "Color and surface finish",
+                    "Tensile strength",
+                    "Moisture absorption"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which factor does NOT affect reflectivity?",
+                options: [
+                    "Surface color",
+                    "Surface finish",
+                    "Material density",
+                    "Material smoothness"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is the ratio of absorbed radiation by a surface called?",
+                options: [
+                    "Reflectivity",
+                    "Absorptivity",
+                    "Conductivity",
+                    "Density"
+                ],
+                answer: 1 // B
+            },
+            {
+                // 41
+                question: "What property determines how much heat a material can store?",
+                options: [
+                    "Thermal conductivity",
+                    "Heat capacity",
+                    "Permeability",
+                    "Reflectivity"
+                ],
+                answer: 1 // B
+            },
+            // removed 42
+            {
+                question: "What is the unit of density?",
+                options: [
+                    "W/m.K",
+                    "J/kg.K",
+                    "kg/m³",
+                    "W/m²"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What does the thermal expansion coefficient measure?",
+                options: [
+                    "The heat capacity of a material",
+                    "The amount a material expands due to temperature change",
+                    "The absorption of heat by a surface",
+                    "The resistance to moisture"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is a material with high heat capacity called?",
+                options: [
+                    "Thermal bridge",
+                    "Heat Capacity",
+                    "Thermal mass",
+                    "Thermal conductor"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is a thermal bridge?",
+                options: [
+                    "A material with high thermal conductivity",
+                    "An area in a building where heat transfer is higher than neighboring areas",
+                    "A material with high reflectivity",
+                    "An insulation material with low density"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following is an example of a thermal bridge?",
+                options: [
+                    "Wooden wall panels",
+                    "The joints between the ceiling and walls",
+                    "Reflective coatings",
+                    "XPS"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "How can thermal bridging be minimized?",
+                options: [
+                    "Using high-density materials",
+                    "Adding proper insulation at joints and connections",
+                    "Increasing permeability",
+                    "Using dark-colored materials"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "How is moisture in an insulating material measured?",
+                options: [
+                    "Absorptivity and reflectivity",
+                    "Moisture absorption and permeability",
+                    "Density and heat capacity",
+                    "Conductivity and resistivity"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is a safety concern with some insulating materials?",
+                options: [
+                    "They may cause allergies and poisoning",
+                    "They improve fire resistance",
+                    "They absorb excess moisture",
+                    "They increase thermal conductivity"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Which of the following is NOT a mechanical property of an insulator?",
+                options: [
+                    "Durability",
+                    "Compression strength",
+                    "Reflectivity",
+                    "Tensile strength"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "How can the Annual Energy Demand (AED) be calculated?",
+                options: [
+                    "AED = Qtotal * N * 100",
+                    "AED = Qtotal * N / 100",
+                    "AED = Qtotal + N",
+                    "AED = Qtotal * 100 / N"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the main purpose of using insulation in buildings?",
+                options: [
+                    "Increase electricity consumption",
+                    "Reduce thermal load and electricity consumption",
+                    "Reduce the built area",
+                    "Increase the need for air conditioning"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "How is a building classified in terms of energy consumption?",
+                options: [
+                    "A high-energy building consumes more than 250 kWh/m² per year",
+                    "A low-energy building consumes more than 250 kWh/m² per year",
+                    "A medium-energy building consumes more than 200 kWh/m² per year",
+                    "A high-energy building consumes less than 50 kWh/m² per year"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "How is the Building Performance Factor (BPF) calculated?",
+                options: [
+                    "BPF = AED / Floor Area",
+                    "BPF = AED * Floor Area",
+                    "BPF = Floor Area / AED",
+                    "BPF = AED - Floor Area"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "What is the main effect of greenhouse gases in the atmosphere?",
+                options: [
+                    "Increase the size of buildings",
+                    "Cause the greenhouse effect",
+                    "Reduce temperature in the atmosphere",
+                    "Maintain Earth's energy"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the effect of insulation on oil consumption?",
+                options: [
+                    "It can increase oil consumption",
+                    "It has no effect on oil consumption",
+                    "It can reduce oil consumption by up to 60%",
+                    "It doubles oil consumption"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is the relationship between oil consumption and the Building Performance Factor (BPF)?",
+                options: [
+                    "Oil consumption increases as BPF decreases",
+                    "There is no relationship between oil consumption and BPF",
+                    "Oil consumption decreases as BPF increases",
+                    "Oil consumption is unaffected by the BPF"
+                ],
+                answer: 0 // C
+            },
+            {
+                question: "What is the CO2 emission formula based on oil consumption provided?",
+                options: [
+                    "1.5 * Exp (BPF / 120)",
+                    "3.0 * Exp (BPF / 1)",
+                    "3.5 * Exp (BPF / 120)",
+                    "1.0 * Exp (BPF / 50)"
+                ],
+                answer: 0 // C
+            }
+            // removed 60
+            ,
+
+
+            // ///////// 60 to 100
+            {
+                question: "What are the two main types of radiation?",
+                options: [
+                    "Visible and invisible radiation",
+                    "Ionizing and non-ionizing radiation",
+                    "Thermal and non-thermal radiation",
+                    "Solar and cosmic radiation"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following is an example of ionizing radiation?",
+                options: [
+                    "Infrared radiation",
+                    "Radio waves",
+                    "Gamma rays",
+                    "Visible light"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is the main source of electromagnetic radiation?",
+                options: [
+                    "The Moon",
+                    "The Earth's core",
+                    "The Sun",
+                    "The ocean"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is the shortest type of electromagnetic wave?",
+                options: [
+                    "Radio waves",
+                    "Ultraviolet rays",
+                    "Gamma rays",
+                    "Infrared waves"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is the main risk of long-term exposure to ultraviolet radiation?",
+                options: [
+                    "Hair loss",
+                    "Psychological discomfort",
+                    "Skin and eye damage",
+                    "Muscle weakness"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is the half-life of iodine-131?",
+                options: [
+                    "8 hours",
+                    "8 days",
+                    "80 years",
+                    "1600 years"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "How is ionizing radiation caused?",
+                options: [
+                    "Causes radio waves to travel slower",
+                    "Ionizes the medium and separates electrons from atoms",
+                    "Produces more visible light",
+                    "Reduces water contamination"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the main function of infrared radiation?",
+                options: [
+                    "It helps in vision improvement",
+                    "It provides warmth and is used for short-range wireless communications",
+                    "It damages biological tissues",
+                    "It acts as a natural disinfectant"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which type of radiation is generally considered safe?",
+                options: [
+                    "Ionizing radiation",
+                    "Cosmic rays",
+                    "Non-ionizing radiation",
+                    "Gamma rays"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is a radioactive isotope?",
+                options: [
+                    "An element that emits heat energy",
+                    "An element with more protons than neutrons",
+                    "An unstable element that emits radiation",
+                    "A type of molecule found in food"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is ionizing radiation?",
+                options: [
+                    "Radiation that cannot penetrate materials",
+                    "Radiation that carries enough energy to ionize atoms or molecules",
+                    "Radiation that has no health risks",
+                    "Radiation that only affects metals"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following statements about alpha particles is true?",
+                options: [
+                    "They have a high penetration power",
+                    "They consist of two protons and two neutrons",
+                    "They can pass through human skin easily",
+                    "They have no health risks"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which material can effectively stop beta particles?",
+                options: [
+                    "Paper",
+                    "Lead",
+                    "Thick wood or aluminum (10-20 mm)",
+                    "Concrete"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Gamma rays are best shielded by which material?",
+                options: [
+                    "Paper",
+                    "Aluminum",
+                    "Thick concrete or lead",
+                    "Plastic"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "How do X-rays differ from gamma rays?",
+                options: [
+                    "They have a higher penetration power",
+                    "They originate from nuclear decay",
+                    "They are emitted due to electron transitions outside the nucleus",
+                    "They pose no health risks"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Where do cosmic rays originate from?",
+                options: [
+                    "The Earth's core",
+                    "Radioactive elements",
+                    "Outer space",
+                    "X-ray machines"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is a major short-term effect of ionizing radiation exposure?",
+                options: [
+                    "Cancer",
+                    "Radiation sickness and burns",
+                    "Genetic mutations",
+                    "Bone fractures"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the standard unit for measuring radiation dose?",
+                options: [
+                    "Joules",
+                    "Watts",
+                    "Sieverts (Sv)",
+                    "Volts"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is a key safety measure against radiation exposure?",
+                options: [
+                    "Wearing thin cotton clothes",
+                    "Using shielding materials like lead and concrete",
+                    "Increasing radiation exposure for immunity",
+                    "Standing close to radiation sources"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following devices is used to measure radiation exposure?",
+                options: [
+                    "Thermometer",
+                    "Radiation meter or dosimeter",
+                    "Stethoscope",
+                    "Geothermal sensor"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "How does sound travel inside buildings?",
+                options: [
+                    "Through air only",
+                    "Through solid surfaces only",
+                    "As pressure waves through different mediums",
+                    "Only through windows and doors"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which type of sound transmission occurs when sound moves through air and enters via windows or vents?",
+                options: [
+                    "Impact Transmission",
+                    "Airborne Transmission",
+                    "Flanking Transmission",
+                    "Structural Transmission"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What happens to sound when it hits a surface?",
+                options: [
+                    "It gets completely absorbed",
+                    "It gets reflected, absorbed, or transmitted",
+                    "It amplifies and becomes louder",
+                    "It vanishes instantly"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What type of sound transmission occurs when sound moves through floors and walls due to vibrations?",
+                options: [
+                    "Flanking Transmission",
+                    "Impact Transmission",
+                    "Airborne Transmission",
+                    "Noise Pollution"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the primary function of acoustic insulation?",
+                options: [
+                    "To reflect all sound waves",
+                    "To enhance sound transmission",
+                    "To reduce or block sound transmission",
+                    "To increase room temperature"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which of the following is NOT a function of acoustic insulation?",
+                options: [
+                    "Blocking external noise",
+                    "Enhancing sound waves",
+                    "Absorbing sound to minimize echo",
+                    "Controlling vibrations from machines"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which material is an example of a reflective soundproofing material?",
+                options: [
+                    "Acoustic foam",
+                    "Carpet",
+                    "Metallic panels",
+                    "Cork"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which material is used for sound absorption?",
+                options: [
+                    "Gypsum boards",
+                    "Acoustic foam",
+                    "Glass panels",
+                    "Concrete walls"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which factor is important in selecting an acoustic insulator?",
+                options: [
+                    "Its ability to reflect sunlight",
+                    "Its ability to absorb or block sound",
+                    "Its electrical conductivity",
+                    "Its color and design"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which method is used to control acoustics in buildings?",
+                options: [
+                    "Proper planning of location & orientation",
+                    "Using thin walls for easy sound travel",
+                    "Avoiding soundproof materials",
+                    "Using parallel walls to amplify sound"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "What is an important design factor in acoustic insulation?",
+                options: [
+                    "Placing windows facing busy streets",
+                    "Using thick walls and ceilings",
+                    "Increasing open spaces between rooms",
+                    "Avoiding insulation materials"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "How can impact sound transmission be minimized?",
+                options: [
+                    "Using carpets or rubber padding",
+                    "Keeping floors uncovered",
+                    "Using thin glass panels",
+                    "Removing insulation layers"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "What is Acoustics?",
+                options: [
+                    "The science of temperature control",
+                    "The study of sound transmission and perception",
+                    "The study of electromagnetic waves",
+                    "The process of heat insulation"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following sound waves is above human hearing range?",
+                options: [
+                    "Infrasonic",
+                    "Sonic",
+                    "Ultrasonic",
+                    "Audible sound"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which sound wave frequency is within the human hearing range?",
+                options: [
+                    "Below 20 Hz",
+                    "20 Hz – 20,000 Hz",
+                    "Above 20,000 Hz",
+                    "None of the above"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What unit is used to measure sound intensity?",
+                options: [
+                    "Joules",
+                    "Watts per square meter (W/m²)",
+                    "Pascals",
+                    "Kilograms"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the unit of Sound Pressure Level (SPL)?",
+                options: [
+                    "Newtons",
+                    "Decibels (dB)",
+                    "Watts",
+                    "Hertz"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "How is Sound Intensity Level (SIL) calculated?",
+                options: [
+                    "SIL = 10 log (I/I_ref)",
+                    "SIL = 20 log (P/P_ref)",
+                    "SIL = I x V",
+                    "SIL = P x A"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "What is the threshold of hearing in terms of sound pressure?",
+                options: [
+                    "10 W/m²",
+                    "2 × 10⁻⁵ Pa",
+                    "100 dB",
+                    "20 Pa"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What does Transmission Loss (TL) measure?",
+                options: [
+                    "The amount of sound amplified by a barrier",
+                    "The amount of sound absorbed by a wall",
+                    "The amount of sound blocked by a barrier",
+                    "The reflection of sound waves"
+                ],
+                answer: 2 // C
+            }
+            ,
+
+            // 101 to 130 
+            {
+                question: "A wall that reduces a 100 dB sound to 55 dB has what Transmission Loss (TL)?",
+                options: [
+                    "45 dB",
+                    "100 dB",
+                    "55 dB",
+                    "20 dB"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Which property describes a material’s ability to absorb sound?",
+                options: [
+                    "Sound Transmission Class (STC)",
+                    "Sound Absorption Coefficient (α)",
+                    "Noise Reflection Index",
+                    "Frequency Index"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What does Noise Reduction Coefficient (NRC) measure?",
+                options: [
+                    "Sound reflection of a material",
+                    "Sound absorption over different frequencies",
+                    "Electrical conductivity of a material",
+                    "Transmission loss through a wall"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is the effect of prolonged exposure to 80 dB noise?",
+                options: [
+                    "No effect on hearing",
+                    "Temporary headache",
+                    "Permanent hearing loss over time",
+                    "Improved hearing ability"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which device is used to measure noise levels?",
+                options: [
+                    "Sound Level Meter",
+                    "Thermometer",
+                    "Hygrometer",
+                    "Noise Amplifier"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Which of the following is NOT a method to prevent industrial noise pollution?",
+                options: [
+                    "Using sound dampers",
+                    "Installing insulation materials",
+                    "Encouraging workers to ignore noise",
+                    "Providing ear protection for workers"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "At what noise level does hearing damage begin to occur over time?",
+                options: [
+                    "20 dB",
+                    "40 dB",
+                    "80 dB",
+                    "120 dB"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What happens when a worker is exposed to loud noise over several years?",
+                options: [
+                    "Increased energy levels",
+                    "Loss of ability to hear whispers",
+                    "Improved focus",
+                    "Faster communication"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is a common solution to reduce machine noise in factories?",
+                options: [
+                    "Adding soundproofing materials",
+                    "Increasing machine speed",
+                    "Removing insulation",
+                    "Using louder alarms"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Which material is used for absorbing vibrations in machines?",
+                options: [
+                    "Metal panels",
+                    "Rubber dampers",
+                    "Glass sheets",
+                    "Plastic covers"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Why is copper commonly chosen for light-gauge wires despite its conductivity being lower than that of aluminum?",
+                options: [
+                    "It is cheaper",
+                    "It is easier to work with",
+                    "It has lower resistance",
+                    "It is more abundant"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Explain the role of silver in electrical conductivity and its practical applications in specialized equipment.",
+                options: [
+                    "It is commonly used in everyday wiring",
+                    "It has lower conductivity than copper",
+                    "It is used in specialized equipment such as satellites due to its high conductivity",
+                    "It is too expensive for practical use"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "How do resistive oxides affect the performance of aluminum wires in electrical systems?",
+                options: [
+                    "They improve conductivity",
+                    "They reduce conductivity",
+                    "They prevent oxidation",
+                    "They have no effect"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "How does the coefficient of thermal expansion impact the performance of materials in electrical applications, such as wiring and transmission lines?",
+                options: [
+                    "It causes materials to expand and contract, affecting their conductivity",
+                    "It has no impact on materials in electrical applications",
+                    "It increases resistance in materials",
+                    "It decreases resistance in materials"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Semiconductors resistance ……………… as their temperature increases.",
+                options: [
+                    "Increases",
+                    "Decreases",
+                    "Not change"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which of the following best describes the concept of the \"energy gap\"?",
+                options: [
+                    "Is the energy required by an electron to move from valence band to conduction band",
+                    "The energy level at which electrons reside in a solid material",
+                    "The total energy possessed by a solid material's electrons"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Those materials that do not allow the flow of electric current, such as: wood, plastic, quartz and ceramic.",
+                options: [
+                    "Semiconductors",
+                    "Conductors",
+                    "Insulators"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "The insulator that can be polarized by an applied electric field is called \"……………..\".",
+                options: [
+                    "dielectric material",
+                    "electric material",
+                    "Semiconductors"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Electrical insulators for overhead transmission lines must be……",
+                options: [
+                    "Able to withstand high voltage",
+                    "Excess voltages due to lightning",
+                    "Possesses high mechanical strength",
+                    "All of the above"
+                ],
+                answer: 3 // D
+            },
+            {
+                question: "This type is supported on steel pin",
+                options: [
+                    "Pin type",
+                    "Suspension type",
+                    "Stress type",
+                    "Capacitors"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Stress or tension insulators are a design for dealing with mechanical stresses",
+                options: [
+                    "Pin type",
+                    "Suspension type",
+                    "Stress type",
+                    "Capacitors"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "These oils are stable at high temperatures and have excellent electrical insulating properties",
+                options: [
+                    "Plastics",
+                    "Insulating oils",
+                    "Insulating varnishes",
+                    "Capacitors"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "What is a powder coating primarily used for?",
+                options: [
+                    "Providing a decorative finish",
+                    "Applying a protective finish on various shapes and sizes",
+                    "Enhancing electrical conductivity",
+                    "Improving mechanical strength"
+                ],
+                answer: 1 // B
+            },
+            {
+                question: "Which type of coating acts as a high dielectric insulator on copper or aluminum conductors?",
+                options: [
+                    "Epoxy powder coating",
+                    "Organic varnishes",
+                    "Solventless resins",
+                    "Ceramic varnishes"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "What are two advantages of insulating varnishes?",
+                options: [
+                    "Improving electrical conductivity and reducing weight",
+                    "Enhancing mechanical bonding and increasing corrosion",
+                    "Increasing mechanical bonding and improving dielectric properties",
+                    "Reducing weight and increasing thermal conductivity"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "What is one of the issues prevented by powder coating?",
+                options: [
+                    "Rust formation",
+                    "Electrical short circuits",
+                    "Cut-through or high-voltage spikes",
+                    "Mechanical wear"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "Which is a very good electrical insulator?",
+                options: [
+                    "Teflon",
+                    "Iron",
+                    "Copper"
+                ],
+                answer: 0 // A
+            },
+            {
+                question: "Permittivity is a measure of how an ……field affects a dielectric medium.",
+                options: [
+                    "Magnetic",
+                    "Mechanic",
+                    "Electric"
+                ],
+                answer: 2 // C
+            },
+            {
+                question: "More electric flux exists in a medium with a ……… permittivity.",
+                options: [
+                    "High",
+                    "Low",
+                    "Equal"
+                ],
+                answer: 1 // A
+            },
+            {
+                question: "Breakdown voltage gradient is usually expressed as ………",
+                options: [
+                    "ohm.m",
+                    "v/m",
+                    "v.m"
+                ],
+                answer: 1 // B
+            },
+            { question: "Waterproofing materials prevent both water and moisture from entering building elements", options: ["True", "False"], answer: 0 },
+            { question: "Bitumen needs to be heated to around 80 degrees Celsius to melt", options: ["True", "False"], answer: 0 },
+            { question: "Surface water from rivers, seas, or ponds can mix with the soil and cause dampness in foundations", options: ["True", "False"], answer: 0 },
+            { question: "Condensation can only occur in the summer when the weather is humid", options: ["True", "False"], answer: 1 },
+            { question: "Bitumen rolls are often covered with a reflective metallic sheet to reflect heat", options: ["True", "False"], answer: 0 },
+            { question: "White cement is used for paving streets and roads", options: ["True", "False"], answer: 1 },
+            { question: "Acrylic is a water-resistant material frequently used for waterproofing roofs", options: ["True", "False"], answer: 0 },
+            { question: "Epoxy is a slow-setting material commonly used to fix holes and cracks", options: ["True", "False"], answer: 1 },
+            { question: "Waterproofing materials like bitumen are ineffective in high-temperature climates", options: ["True", "False"], answer: 1 },
+            { question: "Modern construction often leads to dampness because the newly built walls stay wet for a while", options: ["True", "False"], answer: 0 },
+            { question: "Soundproofing materials can also act as thermal insulators", options: ["True", "False"], answer: 0 },
+            { question: "Absorptivity measures how much radiation the surface reflects", options: ["True", "False"], answer: 1 },
+            { question: "The reflectivity of a material depends on its color and surface finish", options: ["True", "False"], answer: 0 },
+            { question: "Thermal insulation minimizes heat loss in summer and heat gain in winter", options: ["True", "False"], answer: 1 },
+            { question: "Phase change materials are substances that absorb or release heat during a phase change typically between a solid and liquid state", options: ["True", "False"], answer: 0 },
+            { question: "Convection is the transfer of heat through a fluid caused by molecular motion", options: ["True", "False"], answer: 0 },
+            { question: "In cold climates, heat is transferred from outside to inside", options: ["True", "False"], answer: 1 },
+
+            { question: "Conduction is the transfer of heat or electric current from one substance to another by direct contact", options: ["True", "False"], answer: 0 },
+            { question: "Buildings lose about 25 percent of heat through windows", options: ["True", "False"], answer: 1 },
+            { question: "Thermal images help identify areas where insulation is inadequate", options: ["True", "False"], answer: 0 },
+            { question: "Ionizing radiation can ionize the medium by separating electrons from atoms", options: ["True", "False"], answer: 0 },
+            { question: "Non-ionizing radiation is always dangerous to humans", options: ["True", "False"], answer: 1 },
+            { question: "Radio waves are a type of ionizing radiation", options: ["True", "False"], answer: 1 },
+            { question: "The half-life of a radioactive element is the time required for half of its atoms to decay", options: ["True", "False"], answer: 0 },
+            { question: "Exposure to ultraviolet radiation helps in the production of Vitamin D", options: ["True", "False"], answer: 0 },
+            { question: "Alpha particles can penetrate deep into the human body", options: ["True", "False"], answer: 1 },
+            { question: "Beta particles can be either electrons or positrons", options: ["True", "False"], answer: 0 },
+            { question: "Gamma rays have lower penetration power than X-rays", options: ["True", "False"], answer: 1 },
+            { question: "Cosmic rays are mostly absorbed by Earth’s atmosphere", options: ["True", "False"], answer: 0 },
+            { question: "Radiation exposure is measured in Rem, where 100 Rem is considered harmless", options: ["True", "False"], answer: 1 }
+
+        ];
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function showQuestion(index) {
+            const quizContainer = document.getElementById("quiz-container");
+            quizContainer.innerHTML = `
+            <div class="question-container l active">
+            <h6 style="text-align:right">رقم السؤال ${index + 1} من ${questions.length}</h6>
+            <h5 style="color: blue; font-weight: 600; direction: ltr;">${questions[index].question}</h5>
+            <div id="options-container" style="color:black" class="d-flex flex-wrap"></div>
+            </div>
+        `;
+
+            const optionsContainer = document.getElementById("options-container");
+            questions[index].options.forEach((option, i) => {
+                optionsContainer.innerHTML += `
+                <h6 class="option-box" onclick="checkAnswer(${i})">${option}</h6> `;
+            });
+        }
+
+        function checkAnswer(selectedIndex) {
+            const answer = questions[currentQuestionIndex].answer;
+
+            questions[currentQuestionIndex].selectedIndex = selectedIndex;
+
+            if (selectedIndex === answer) {
+                score++;
+                document
+                    .querySelectorAll(".option-box")
+                [answer].classList.add("correct");
+                document.getElementById("correct-sound").play();
+            } else {
+                document
+                    .querySelectorAll(".option-box")
+                [selectedIndex].classList.add("incorrect");
+                document
+                    .querySelectorAll(".option-box")
+                [answer].classList.add("correct");
+                document.getElementById("incorrect-sound").play();
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < questions.length) {
+                    showQuestion(currentQuestionIndex);
+                    updateProgressBar();
+                } else {
+                    showScore();
+                    showSolutions();
+                }
+            }, 1000);
+        }
+
+        function showScore() {
+            const quizContainer = document.getElementById("quiz-container");
+            const scoreContainer = document.getElementById("score-container");
+            quizContainer.innerHTML = "";
+            scoreContainer.innerHTML = `<h3>Your result ${score} from ${questions.length}</h3>`;
+        }
+
+        function showSolutions() {
+            const quizContainer = document.getElementById("quiz-container");
+            const solutionsContainer = document.createElement("div");
+            solutionsContainer.classList.add("question-solution-container");
+            quizContainer.appendChild(solutionsContainer);
+
+            questions.forEach((question, index) => {
+                const solutionDiv = document.createElement("div");
+                solutionDiv.innerHTML = `
+                <h6 style="color: red">${index + 1}. ${question.question}</h6>
+                ${question.selectedIndex !== undefined ? `<p><strong>Your Choice:</strong> ${question.options[question.selectedIndex]}</p>` : ''}
+                <p><strong>Correct Answer:</strong> ${question.options[question.answer]}</p>
+                `;
+                solutionsContainer.appendChild(solutionDiv);
+            });
+        }
+
+        function updateProgressBar() {
+            const progressBar = document.getElementById("progress-bar");
+            const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressBar.setAttribute("aria-valuenow", progress);
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            shuffle(questions); // Shuffle the questions array
+            showQuestion(currentQuestionIndex);
+            updateProgressBar();
+        });
+    </script>
+</body>
+
+</html>
